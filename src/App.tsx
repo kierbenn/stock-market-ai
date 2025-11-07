@@ -17,6 +17,7 @@ function App() {
 
   const [renderReport, setRenderReport] = useState('')
   const [tickers, setTickers] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
 
   const effectRan = useRef(false)
 
@@ -46,6 +47,7 @@ function App() {
         if (status === 200) {
           // creating report
           console.log(data)
+          setLoading(true)
           return data
         } else {
           // error
@@ -83,14 +85,21 @@ function App() {
 
   return (
 
-      <main>
-        <section className="action-panel">
+      <main className='w-[36rem] pt-8'>
+        <section className="flex flex-col gap-4">
+          <h1>Stock recommendations</h1>
           <form action={addTicker} id="ticker-input-form">
-            <label htmlFor="ticker-input"> Add up to 3 stock tickers below to get a super accurate stock predictions report👇 </label>
+            <p className='pb-6'> Add up to 3 stock tickers below<br></br>to get a super accurate stock predictions report👇 </p>
             <div className="form-input-control">
-              <input type="text" id="ticker-input" name='ticker' placeholder="MSFT" />
+              <input 
+                type="text" 
+                id="ticker-input" 
+                name='ticker' 
+                placeholder="MSFT"
+                className='p-[0.6em] border border-1 border-orange-500 rounded-l-md' 
+              />
               <button 
-                className="add-ticker-btn"
+                className="bg-orange-500 rounded-none rounded-r-md"
               >+</button>
             </div>
           </form>
@@ -98,22 +107,23 @@ function App() {
             {tickers.join(', ')}
           </p>
           <button 
-            className="generate-report-btn" 
+            className="bg-green-500 mx-auto flex" 
             type="button"
             onClick={getStockData} 
             disabled={tickers.length > 1 ? false : true }
-          > Generate Report
+          > 
+          {loading && !renderReport && <svg className="mr-3 -ml-1 size-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>}
+          Generate Report
           </button>
-          <p className="tag-line">Always correct 15% of the time!</p>
+          {!renderReport && <p className="tag-line">Always correct 15% of the time!</p>}
         </section>
-        <section className="loading-panel">
-          <img src="images/loader.svg" alt="loading" />
-          <div id="api-message">Querying Stocks API...</div>
-        </section>
+       
         {renderReport && 
-          <section className="output-panel">
-            <h2>Your Report 😜</h2>
-            <p>{renderReport}</p>
+          <section className="mt-6">
+            <fieldset className="border border-gray-300 p-4 rounded-md">
+              <legend className='text-lg font-semibold px-2'><h2>Your Report 😜</h2></legend>
+              <p>{renderReport}</p>
+            </fieldset>
           </section>
         }
       </main>
